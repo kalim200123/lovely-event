@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our 2nd Anniversary</title>
+    
+    <!-- Meta Tags for KakaoTalk/Sharing -->
+    <meta property="og:title" content="❤️ 우리의 2주년 ❤️">
+    <meta property="og:description" content="730일의 추억을 이곳에 담았어. 사랑해!">
+    <meta property="og:image" content="./img/thumb.jpg">
+
+    <!-- 폰트 -->
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+    <!-- Favicon -->
+    <link rel="icon" href="https://toss.im/assets/img/og-icon.png"> <!-- Temporary heart-like icon if user doesn't have one, or simple emoji -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>❤️</text></svg>">
+    
+    <!-- 라이브러리 -->
+    <script src="https://unpkg.com/typeit@8.7.1/dist/index.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* 🎨 Color Palette */
+        :root {
+            --bg-color: #fff0f5; 
+            --primary-color: #ffb7b2; 
+            --secondary-color: #ffdac1; 
+            --text-main: #4a4a4a;
+            --text-sub: #888888;
+            --white: #ffffff;
+            --shadow: 0 10px 30px rgba(255, 183, 178, 0.3);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: linear-gradient(to bottom, #fff0f5, #fffdf9);
+            color: var(--text-main);
+            font-family: 'Pretendard', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 🌸 Intro & Login Screen */
+        #intro-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #fff0f5 0%, #ffdac1 100%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1s ease;
+            overflow: hidden; /* 벚꽃 넘침 방지 */
+        }
+
+        /* 🌸 벚꽃잎 스타일 */
+        .petal {
+            position: absolute;
+            background-color: #ffc0cb;
+            border-radius: 150% 0 150% 0;
+            width: 15px; height: 15px;
+            opacity: 0.8;
+            z-index: 1000;
+            pointer-events: none;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% { top: -10%; transform: translateX(0) rotate(0deg); opacity: 1; }
+            100% { top: 110%; transform: translateX(100px) rotate(360deg); opacity: 0; }
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.25); /* 반투명 */
+            backdrop-filter: blur(10px); /* 유리 효과 */
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            text-align: center;
+            max-width: 90%;
+            width: 400px;
+            border: 1px solid rgba(255, 255, 255, 0.5); /* 테두리도 은은하게 */
+            z-index: 2000; /* 벚꽃보다 위에 */
+        }
+
+        .hand-font {
+            font-family: 'Nanum Pen Script', cursive;
+            font-size: 2.5rem;
+            color: #ff8fa3;
+            margin-bottom: 20px;
+        }
+
+        .login-input {
+            background: #f9f9f9;
+            border: 2px solid #eee;
+            border-radius: 50px;
+            padding: 15px;
+            font-size: 1.2rem;
+            text-align: center;
+            width: 100%;
+            margin-top: 15px;
+            outline: none;
+            transition: all 0.3s;
+            font-family: 'Pretendard', sans-serif;
+        }
+
+        .login-input:focus {
+            border-color: var(--primary-color);
+            background: #fff;
+            box-shadow: 0 0 15px rgba(255, 183, 178, 0.3);
+        }
+
+        /* 📖 Main Layout */
+        #main-app {
+            max-width: 800px;
+            margin: 0 auto;
+            display: none;
+            padding-bottom: 100px;
+            opacity: 0;
+            animation: fadeInPage 1s forwards;
+        }
+
+        @keyframes fadeInPage { to { opacity: 1; } }
+
+        .header { text-align: center; padding: 80px 20px 40px; }
+        .main-title { font-family: 'Nanum Pen Script', cursive; font-size: 4rem; color: var(--text-main); margin-bottom: 10px; }
+        .sub-title { color: var(--text-sub); font-size: 1rem; letter-spacing: 2px; }
+
+        /* ⏳ Timeline Style */
+        .timeline-container { position: relative; padding: 40px 20px; }
+        .timeline-container::before {
+            content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px;
+            background: #ffdac1; transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            position: relative; margin-bottom: 60px; width: 100%;
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; transform: translateY(30px); transition: all 0.6s ease;
+        }
+        .timeline-item.visible { opacity: 1; transform: translateY(0); }
+
+        .date-badge {
+            position: absolute; left: 50%; transform: translateX(-50%);
+            background: #fff; border: 2px solid var(--primary-color);
+            color: var(--primary-color); padding: 5px 15px; border-radius: 20px;
+            font-weight: bold; font-size: 0.9rem; z-index: 2;
+        }
+
+        .memory-card {
+            background: var(--white); width: 45%; border-radius: 15px; overflow: hidden;
+            box-shadow: var(--shadow); cursor: pointer; transition: transform 0.3s;
+            position: relative;
+        }
+        
+        .timeline-item:nth-child(odd) { justify-content: flex-start; }
+        .timeline-item:nth-child(even) { justify-content: flex-end; }
+        .timeline-item:nth-child(odd) .memory-card { margin-left: auto; margin-right: 50px; }
+        .timeline-item:nth-child(even) .memory-card { margin-left: 50px; margin-right: auto; }
+        .memory-card:hover { transform: translateY(-10px); }
+
+        .card-img-holder { width: 100%; height: auto; background-color: #eee; overflow: hidden; position: relative; }
+        .card-img { width: 100%; height: auto; display: block; transition: transform 0.5s; }
+        .memory-card:hover .card-img { transform: scale(1.1); }
+        
+        /* 앨범 아이콘 추가 (여러장임을 표시) */
+        .multiple-icon {
+            position: absolute; top: 10px; right: 10px;
+            background: rgba(0,0,0,0.5); color: white;
+            padding: 5px 10px; border-radius: 15px; font-size: 0.8rem;
+        }
+
+        .card-body { padding: 20px; text-align: center; }
+        .card-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 5px; color: #555; }
+        .card-desc { font-size: 0.9rem; color: #888; }
+        .click-hint { font-size: 0.8rem; color: var(--primary-color); margin-top: 10px; display: block; }
+
+        /* 💌 Letter Section */
+        .letter-section {
+            margin-top: 60px; padding: 60px 30px; background: #fff;
+            border-radius: 20px; box-shadow: var(--shadow);
+            position: relative; text-align: center; margin-bottom: 60px;
+        }
+
+        .letter-paper {
+            background-image: linear-gradient(#f1f1f1 1px, transparent 1px);
+            background-size: 100% 2rem; line-height: 2rem; padding: 20px;
+            text-align: left; font-family: 'Nanum Pen Script', cursive;
+            font-size: 1.8rem; color: #555; min-height: 300px;
+        }
+
+        .final-btn {
+            background: var(--primary-color); color: white; border: none;
+            padding: 15px 40px; border-radius: 30px; font-size: 1.2rem;
+            margin-top: 30px; cursor: pointer;
+            box-shadow: 0 10px 20px rgba(255, 183, 178, 0.4);
+            transition: transform 0.2s; display: none;
+        }
+        .final-btn:hover { transform: scale(1.05); }
+
+        /* 🌟 Final Section */
+        .final-section {
+            display: none; text-align: center; margin-top: 50px; animation: slideUp 1s ease;
+        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .final-card-wrapper { max-width: 500px; margin: 0 auto; transform: scale(1.05); }
+        .final-message {
+            font-family: 'Nanum Pen Script', cursive; font-size: 2.5rem;
+            color: var(--primary-color); margin-top: 20px; margin-bottom: 40px;
+        }
+
+        /* 🖼️ Carousel Modal */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(5px);
+            z-index: 10000; display: none; justify-content: center; align-items: center;
+            padding: 20px; opacity: 0; transition: opacity 0.3s;
+        }
+
+        .modal-content {
+            background: white; padding: 10px; border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15); max-width: 600px; width: 100%;
+            text-align: center; transform: scale(0.9); transition: transform 0.3s;
+        }
+        
+        .modal-inner {
+            border: 2px dashed var(--secondary-color); padding: 20px; border-radius: 15px;
+            position: relative;
+        }
+
+        /* Carousel Styles */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 80vh; 
+            background: #f8f8f8;
+            border-radius: 10px;
+            overflow: hidden; /* 스크롤 불필요 시 hidden, 필요 시 auto */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .carousel-img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain; /* 짤리지 않고 다 보이게 설정 */
+            display: none; 
+            animation: fadeImg 0.5s ease;
+        }
+        .carousel-img.active { display: block; }
+        
+        @keyframes fadeImg { from { opacity: 0.5; } to { opacity: 1; } }
+
+        .nav-btn {
+            position: absolute;
+            top: 50%; transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.8);
+            border: none; border-radius: 50%;
+            width: 40px; height: 40px;
+            font-size: 1.2rem; color: var(--primary-color);
+            cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+        .nav-btn:hover { background: white; color: #ff8fa3; }
+        .prev-btn { left: 10px; }
+        .next-btn { right: 10px; }
+
+        .img-counter {
+            position: absolute; bottom: 10px; right: 10px;
+            background: rgba(0,0,0,0.6); color: white;
+            padding: 3px 10px; border-radius: 10px; font-size: 0.8rem;
+        }
+
+        .modal-text h3 { color: var(--primary-color); font-family: 'Nanum Pen Script', cursive; font-size: 2rem; margin-bottom: 10px; }
+        .modal-text p { color: #666; line-height: 1.6; word-break: keep-all; }
+
+        .close-btn {
+            position: absolute; top: 15px; right: 15px;
+            background: none; border: none; font-size: 2rem;
+            cursor: pointer; color: #aaa; z-index: 20;
+        }
+
+        /* 📱 Mobile Responsive */
+        @media (max-width: 768px) {
+            .timeline-container::before { left: 20px; }
+            .timeline-item { flex-direction: column; align-items: flex-start; margin-left: 20px; }
+            .timeline-item:nth-child(odd), .timeline-item:nth-child(even) { justify-content: flex-start; }
+            .date-badge { left: 0; transform: translateX(-50%); }
+            .memory-card { width: calc(100% - 40px); margin-left: 30px !important; margin-right: 0 !important; }
+            .main-title { font-size: 3rem; }
+            .final-card-wrapper { width: 90%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. Intro & Login -->
+    <div id="intro-screen">
+        <div class="login-card">
+            <i class="fas fa-heart" style="color: #ffb7b2; font-size: 3rem; margin-bottom: 20px; animation: heartbeat 1.5s infinite;"></i>
+            <h1 class="hand-font" id="intro-title"></h1>
+            <p style="color: #4a4a4a; font-size: 1rem; font-weight: bold;">우리가 처음 사랑을 시작한 날은?</p>
+            <input type="tel" class="login-input" id="login-date" placeholder="" maxlength="8">
+        </div>
+    </div>
+
+    <!-- 2. Main Content -->
+    <div id="main-app">
+        <header class="header">
+            <h1 class="main-title">Our 2nd Anniversary</h1>
+            <p class="sub-title">2024.01.18 ~ ING ❤️</p>
+        </header>
+
+        <!-- Timeline -->
+        <div class="timeline-container" id="timeline-box">
+            <!-- JS로 아이템들이 여기에 추가됩니다 -->
+        </div>
+
+        <!-- Letter Section -->
+        <div class="letter-section">
+            <i class="fas fa-envelope-open-text" style="color: var(--primary-color); font-size: 2rem; margin-bottom: 20px;"></i>
+            <h2 class="hand-font" style="margin-bottom: 20px;">To. 사랑하는 너에게</h2>
+            <div class="letter-paper" id="typewriter-area"></div>
+            <button class="final-btn" id="promise-btn">Forever with you ❤️</button>
+        </div>
+
+        <!-- Final Memory Section -->
+        <div class="final-section" id="final-section">
+            <div class="final-card-wrapper">
+                <div class="memory-card" style="width: 100%; margin: 0; cursor: default;">
+                    <div class="card-img-holder">
+                        <img id="final-img" src="" class="card-img" alt="final-memory">
+                    </div>
+                    <div class="card-body">
+                        <div class="card-title" id="final-title"></div>
+                        <div class="card-desc" id="final-desc"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="final-message">
+                계속해서 이렇게 더 예쁘게 사랑하자 💕
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Carousel Modal -->
+    <div class="modal-overlay" id="modal" onclick="closeModal(event)">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal(event)">&times;</button>
+            <div class="modal-inner">
+                
+                <!-- 슬라이드 영역 -->
+                <div class="carousel-container">
+                    <button class="nav-btn prev-btn" onclick="changeSlide(-1)">&#10094;</button>
+                    <div id="carousel-imgs">
+                        <!-- JS로 이미지들이 들어갑니다 -->
+                    </div>
+                    <button class="nav-btn next-btn" onclick="changeSlide(1)">&#10095;</button>
+                    <div class="img-counter" id="img-counter">1 / 1</div>
+                </div>
+
+                <div class="modal-text">
+                    <h3 id="modal-title">제목</h3>
+                    <p id="modal-desc">내용</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ============================================================
+           ⚙️ 수정할 부분: 로컬 폴더 구조에 맞춰서 경로를 변경했습니다!
+           img 폴더를 만들고 사진을 넣어주세요.
+           ============================================================ */
+        const CONFIG = {
+            startDate: "20240118", 
+            ogImage: "./img/thumb.jpg", 
+            
+            memories: [
+                { 
+                    date: "2024.01.18", 
+                    title: "설레는 첫 시작", 
+                    images: [
+                        "./img/01_start/1.jpg",
+                        "./img/01_start/2.jpg",
+                        "./img/01_start/3.jpg",
+                        "./img/01_start/4.jpg",
+                        "./img/01_start/5.jpg"
+                    ], 
+                    desc: "처음 만났을 때 기억나? 너랑 함께한 시작이 너무나 소중하다 ㅎㅎ❤️<br>영하 17도에도 서로가 좋아서 집 가기 싫었던 그날, 첫 데이트 날, 보고 싶다는 말에 바로 만난 날들을 담아봤어!" 
+                },
+                { 
+                    date: "2024.04.01", 
+                    title: "우리의 벚꽃 데이트", 
+                    images: [ 
+                        "./img/02_cherry/1.jpg",
+                        "./img/02_cherry/2.jpg",
+                        "./img/02_cherry/3.jpg",
+                        "./img/02_cherry/4.jpg"
+                    ],
+                    desc: "내 평생의 기억에 남을 첫 벚꽃놀이야! 벚꽃이 필 때마다 나랑 함께 가자!🌸<br>우리 시밀러룩도 대땅 이쁘다 ㅎㅎㅎ" 
+                },
+                { 
+                    date: "2024.04.26",
+                    title: "우리 100일 기념", 
+                    images: [
+                        "./img/03_100days/1.jpg",
+                        "./img/03_100days/2.jpg",
+                        "./img/03_100days/3.jpg",
+                        "./img/03_100days/4.jpg"
+                    ],
+                    desc: "처음으로 꽃들고 너를 만나러 간 날! 우리의 100일을 축하하며🎇<br>+꽃 사러 가서 은빈이가 뭘 받으면 좋을까 고민 10분 했다ㅎㅎ(10분이면 엄청 긴 시간이야.. ㅋㅋㅋ)" 
+                },
+                { 
+                    date: "2024.11.08",
+                    title: "가을 화담숲 단풍 여행", 
+                    images: [
+                        "./img/04_autumn/1.jpg",
+                        "./img/04_autumn/2.jpg",
+                        "./img/04_autumn/3.jpg",
+                        "./img/04_autumn/4.jpg",
+                        "./img/04_autumn/5.jpg",
+                    ],
+                    desc: "카메라로 널 담은 날! 단풍이 안 보이고 너만 보인다 🤭💕<br>다음엔 우리 차타고 슝슝이로 가자!🚗" 
+                },
+                { 
+                    date: "2025.01.18", 
+                    title: "벌써 1주년", 
+                    images: [
+                        "./img/05_1st/1.jpg",
+                        "./img/05_1st/2.jpg",
+                        "./img/05_1st/3.jpg",
+                        "./img/05_1st/4.jpg"
+                    ],
+                    desc: "1년 동안 너랑 함께 한 시간이 너무 소중해❤️<br>항상 웃으면서 내 옆에 있어줘서 고마워 은빈아😊" 
+                },
+                { 
+                    date: "2025.11.09",
+                    title: "제주도 여행", 
+                    images: [
+                        "./img/06_jeju/1.jpg",
+                        "./img/06_jeju/2.jpg",
+                        "./img/06_jeju/3.jpg",
+                        "./img/06_jeju/4.jpg",
+                        "./img/06_jeju/5.jpg",
+                    ],
+                    desc: "모든 게 완벽했던 우리의 제주!🏝️<br>흑돼지, 딱새우, 방어... 이 모든 걸 너랑해서 정말 행복했어🥰" 
+                },
+                { 
+                    date: "forever",
+                    title: "믿음과 사랑", 
+                    images: [
+                        "./img/07_love/1.jpg",
+                        "./img/07_love/2.jpg",
+                        "./img/07_love/3.jpg",
+                        "./img/07_love/4.jpg",
+                    ],
+                    desc: "우리가 쌓아온 신뢰만큼 더 깊어진 우리의 사랑을 담아봤어!<br>언제나 너의 옆에서 함께 할게 은빈아!❤️" 
+                }
+            ],
+
+            // 마지막 하이라이트 (단일 이미지)
+            finalMemory: {
+                title: "우리의 2주년",
+                img: "./img/final/1.jpg", // 폴더명: final
+                desc: "사랑해 은빈아🥰. 우리의 내일들도 함께 하자❤️"
+            },
+
+            // 편지 내용
+            letter: `
+사랑하는 은빈아!!<br><br>
+
+앙녕이! 우리가 만난 지 벌써 2년이라니.. 진짜 대땅이다..<br>
+시간이 진짜 순식간에 지나가는 거 같아!<br><br>
+
+지난 2년 동안 기쁜 일도, 가끔은 힘든 일도 있었지만<br>
+네가 곁에 있어줘서 모든 순간이 의미 있었어.<br><br>
+
+내가 표현이 좀 서툴고, GPT보다 못할 때도 많지만!(ㅋㅋㅋ)<br>
+내 마음속 1순위는 언제나 너야 은빈아<br><br>
+
+언제나 나를 사랑스러운 눈으로 바라봐줘서 너무 고맙고 사랑해❤️<br>
+앞으로 우리가 함께할 날들이 정말 너무 기대된다!<br><br>
+
+우리 주님 안에서 서로를 더 많이 아껴주고, 더 많이 사랑하면서,<br>
+아름답고 빛날 우리의 내일을 같이 그려나가자!<br><br>
+
+2주년 정말 축하하고, 너무너무 사랑해 ❤️<br><br>
+- 너의 남자친구 동빵이가 -
+            `
+        };
+
+
+        /* ============================================================
+           🚀 로직 구현
+           ============================================================ */
+        
+        // 0-1. Floating Hearts Animation
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('floating-heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 3 + 4 + 's'; 
+            heart.style.opacity = Math.random() * 0.5 + 0.1;
+            heart.style.fontSize = Math.random() * 20 + 10 + 'px';
+            document.body.appendChild(heart);
+            setTimeout(() => { heart.remove(); }, 6000);
+        }
+        setInterval(createHeart, 800);
+
+        // 0-2. 🌸 벚꽃 내리는 효과
+        function createPetals() {
+            const container = document.getElementById('intro-screen');
+            for(let i=0; i<30; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'petal';
+                petal.style.left = Math.random() * 100 + '%';
+                petal.style.animationDuration = Math.random() * 5 + 5 + 's'; // 5~10초
+                petal.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(petal);
+            }
+        }
+        createPetals();
+
+        // 0-3. ✨ 인트로 타이핑 효과
+        new TypeIt("#intro-title", {
+            strings: ["Our 2nd Anniversary"],
+            speed: 100,
+            waitUntilVisible: true,
+            cursor: false
+        }).go();
+
+        // 1. 로그인
+        const loginInput = document.getElementById('login-date');
+        loginInput.addEventListener('keyup', (e) => {
+            if (loginInput.value === CONFIG.startDate) {
+                document.getElementById('intro-screen').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('intro-screen').style.display = 'none';
+                    document.getElementById('main-app').style.display = 'block';
+                    initTimeline(); 
+                    window.addEventListener('scroll', checkScroll);
+                    checkScroll();
+                }, 1000);
+            } else if (loginInput.value.length === 8) {
+                loginInput.style.borderColor = '#ff6b6b';
+                loginInput.classList.add('animate__animated', 'animate__shakeX');
+                setTimeout(() => loginInput.style.borderColor = '#eee', 1000);
+            }
+        });
+
+        // 2. 타임라인 생성
+        function initTimeline() {
+            const container = document.getElementById('timeline-box');
+            CONFIG.memories.forEach((mem, index) => {
+                const item = document.createElement('div');
+                item.className = 'timeline-item';
+                
+                // 첫 번째 이미지를 대표 사진으로 사용 (mem.images[0])
+                const thumb = mem.images && mem.images.length > 0 ? mem.images[0] : "";
+                const count = mem.images ? mem.images.length : 0;
+
+                item.innerHTML = `
+                    <div class="date-badge">${mem.date}</div>
+                    <div class="memory-card" onclick="openModal(${index})">
+                        <div class="card-img-holder">
+                            <img src="${thumb}" class="card-img" alt="memory" onerror="this.src='https://placehold.co/600x400/ffb7b2/white?text=No+Image';">
+                            ${count > 1 ? '<span class="multiple-icon"><i class="fas fa-images"></i> +'+(count-1)+'</span>' : ''}
+                        </div>
+                        <div class="card-body">
+                            <div class="card-title">${mem.title}</div>
+                            <span class="click-hint">Click to see more <i class="fas fa-search-plus"></i></span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+            
+            // 마지막 사진 (에러 시 플레이스홀더 표시)
+            const finalImg = document.getElementById('final-img');
+            finalImg.src = CONFIG.finalMemory.img;
+            finalImg.onerror = function() { this.src = 'https://placehold.co/600x400/ffb7b2/white?text=No+Image'; };
+            
+            document.getElementById('final-title').innerText = CONFIG.finalMemory.title;
+            document.getElementById('final-desc').innerText = CONFIG.finalMemory.desc;
+        }
+
+        // 3. 스크롤 애니메이션
+        function checkScroll() {
+            const items = document.querySelectorAll('.timeline-item');
+            const letterSec = document.querySelector('.letter-section');
+            const triggerBottom = window.innerHeight * 0.8;
+
+            items.forEach(item => {
+                const top = item.getBoundingClientRect().top;
+                if(top < triggerBottom) item.classList.add('visible');
+            });
+
+            const letterTop = letterSec.getBoundingClientRect().top;
+            if(letterTop < triggerBottom && !window.letterStarted) {
+                window.letterStarted = true;
+                startTyping();
+            }
+        }
+
+        // 4. 모달 & Carousel 기능
+        let currentImgIdx = 0;
+        let currentMemIdx = 0;
+
+        function openModal(index) {
+            currentMemIdx = index;
+            currentImgIdx = 0; // 항상 첫번째 사진부터 시작
+            
+            const data = CONFIG.memories[index];
+            const overlay = document.getElementById('modal');
+            
+            // 텍스트 설정
+            document.getElementById('modal-title').innerText = data.title;
+            document.getElementById('modal-desc').innerHTML = data.desc;
+
+            // 이미지 슬라이더 생성
+            const imgContainer = document.getElementById('carousel-imgs');
+            imgContainer.innerHTML = ''; // 초기화
+            
+            if(data.images && data.images.length > 0) {
+                data.images.forEach((src, i) => {
+                    const img = document.createElement('img');
+                    img.src = src;
+                    img.className = i === 0 ? 'carousel-img active' : 'carousel-img';
+                    // 이미지 로드 실패 시 플레이스홀더
+                    img.onerror = function() { this.src = 'https://placehold.co/600x400/ffb7b2/white?text=No+Image'; };
+                    imgContainer.appendChild(img);
+                });
+                updateCounter();
+            }
+
+            overlay.style.display = 'flex';
+            setTimeout(() => {
+                overlay.style.opacity = '1';
+                document.querySelector('.modal-content').style.transform = 'scale(1)';
+            }, 10);
+        }
+
+        function changeSlide(direction) {
+            const data = CONFIG.memories[currentMemIdx];
+            const images = document.querySelectorAll('.carousel-img');
+            
+            if (!images.length) return;
+
+            // 현재 이미지 숨기기
+            images[currentImgIdx].classList.remove('active');
+
+            // 인덱스 계산
+            currentImgIdx += direction;
+            if (currentImgIdx < 0) currentImgIdx = images.length - 1;
+            if (currentImgIdx >= images.length) currentImgIdx = 0;
+
+            // 새 이미지 보이기
+            images[currentImgIdx].classList.add('active');
+            updateCounter();
+        }
+
+        function updateCounter() {
+            const data = CONFIG.memories[currentMemIdx];
+            const total = data.images.length;
+            document.getElementById('img-counter').innerText = (currentImgIdx + 1) + " / " + total;
+        }
+
+        function closeModal(e) {
+            if(e.target === document.getElementById('modal') || e.target.classList.contains('close-btn')) {
+                const overlay = document.getElementById('modal');
+                overlay.style.opacity = '0';
+                document.querySelector('.modal-content').style.transform = 'scale(0.9)';
+                setTimeout(() => overlay.style.display = 'none', 300);
+            }
+        }
+
+        // 5. 편지 타이핑
+        function startTyping() {
+            new TypeIt("#typewriter-area", {
+                strings: CONFIG.letter,
+                speed: 50,
+                html: true,
+                afterComplete: () => {
+                    document.getElementById('promise-btn').style.display = 'inline-block';
+                }
+            }).go();
+        }
+
+        // 6. 엔딩
+        document.getElementById('promise-btn').addEventListener('click', () => {
+            var duration = 5 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) return clearInterval(interval);
+                var particleCount = 50 * (timeLeft / duration);
+                confetti({ ...defaults, particleCount, origin: { x: Math.random(), y: Math.random() - 0.2 } });
+            }, 250);
+
+            const finalSection = document.getElementById('final-section');
+            finalSection.style.display = 'block';
+            setTimeout(() => {
+                finalSection.scrollIntoView({ behavior: 'smooth' });
+            }, 500);
+
+            Swal.fire({
+                title: '❤️사랑해❤️',
+                text: '우리 뿡스빵스의 2년을 축하하며🥳',
+                icon: 'success',
+                confirmButtonColor: '#ffb7b2'
+            });
+        });
+
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes heartbeat { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+            .floating-heart {
+                position: fixed; top: 100%; z-index: 100;
+                animation: floatUp ease-in forwards; pointer-events: none;
+            }
+            @keyframes floatUp {
+                0% { top: 100%; transform: translateX(0); }
+                100% { top: -10%; transform: translateX(20px); }
+            }
+        `;
+        document.head.appendChild(style);
+
+    </script>
+</body>
+</html>
